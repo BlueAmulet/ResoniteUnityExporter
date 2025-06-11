@@ -34,6 +34,7 @@ namespace ImportFromUnityLib
             // so that we can have multiple bones named same thing
             // will that cause issues? idk
             // can't use foreach or we end up with multiple null bones using same index (for reasons I don't quite understand)
+            Slot tmpBone = null;
             for(int boneI = 0; boneI < skinnedMeshRendererData.bones.Length; boneI++)
             {
                 RefID_U2Res boneRefID = skinnedMeshRendererData.bones[boneI];
@@ -43,8 +44,11 @@ namespace ImportFromUnityLib
                 // and just removing them would have the indices be offset
                 if (boneRefID.id == 0)
                 {
-                    string boneName = SkinnedMeshRendererConstants.tempBonePrefix + boneI;
-                    Slot tmpBone = renderer.Slot.AddSlot(boneName);
+                    if (tmpBone == null)
+                    {
+                        string boneName = SkinnedMeshRendererConstants.tempBonePrefix + "_" + targetSlot.Name;
+                        tmpBone = renderer.Slot.AddSlot(boneName);
+                    }
                     renderer.Bones.Add().Value = tmpBone.ReferenceID;
                 }
                 else
