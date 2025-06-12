@@ -158,6 +158,8 @@ namespace ImportFromUnityLib
             float2 detailNormalMapTexOffset = new float2(0, 0);
             float2 detailNormalMapTexScale = new float2(1, 1);
 
+            bool hasCullingMode = false;
+            Culling cullingMode = Culling.Back;
 
             float renderingMode = 0.0f;
 
@@ -316,7 +318,23 @@ namespace ImportFromUnityLib
                 //mat.NormalMapOffset.Value
                 //mat.NormalMapScale.Value
             }
-
+            if (TryGetMaterialFloat(materialData, "_Cull", out float cullMode))
+            {
+                hasCullingMode = true;
+                cullMode = (float)Math.Round(cullMode);
+                if (cullMode == 0.0)
+                {
+                    cullingMode = Culling.Off;
+                }
+                else if (cullMode == 1.0)
+                {
+                    cullingMode = Culling.Front;
+                }
+                else if (cullMode == 2.0)
+                {
+                    cullingMode = Culling.Back;
+                }
+            }
 
             RefID_U2Res matRefId = new RefID_U2Res()
             {
@@ -366,6 +384,10 @@ namespace ImportFromUnityLib
                     mat.NormalMap.Value = bumpMapTexRefID.id;
                     mat.NormalMapOffset.Value = bumpMapTexOffset;
                     mat.NormalMapScale.Value = bumpMapTexScale;
+                }
+                if (hasCullingMode)
+                {
+                    mat.Culling.Value = cullingMode;
                 }
             }
             else if (materialData.materialName == MaterialNames_U2Res.PBS_SPECULAR_MAT) {
