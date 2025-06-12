@@ -26,11 +26,13 @@ namespace ImportFromUnityLib
             // try int and float as well, depends on the shader
             if (TryGetMaterialInt(material, fieldName, out int intValue))
             {
-                return intValue == 1;
+                value = intValue == 1;
+                return true;
             }
             if (TryGetMaterialFloat(material, fieldName, out float floatValue))
             {
-                return floatValue == 1.0f;
+                value = floatValue == 1.0f;
+                return true;
             }
             return false;
         }
